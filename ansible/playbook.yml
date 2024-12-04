@@ -1,0 +1,17 @@
+- name: Deploy server docker container
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Run container
+      command: docker-compose -f ../docker-compose.yml up -d --build
+    - name: Clone github
+      git:
+        repo: https://github.com/murickg/lab2_pdris.git
+        dest: ./shared_volume/app
+        version: lab2
+    - name: Аpt-get update and install python3 and pip
+      command: docker exec server_app bash /shared_volume/app/app/python_install.sh
+    - name: Install Flask
+      command: docker exec server_app bash /shared_volume/app/flask_install.sh
+    - name: Run server
+      command: docker exec server_app bash /shared_volume/app/app/run_server.sh
